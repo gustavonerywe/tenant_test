@@ -1,0 +1,75 @@
+
+{% block main %}
+<link rel="stylesheet" href="/static/css/login.css" />
+<script src="/static/js/login.js"></script>
+    <form class="login-form" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            {% if field.name != 'password' %}
+            <div class="password-container">
+               <label for="id_username" class="label"> {{ field.label_tag }}</label>
+                {{ field }}
+            </div>
+            {% endif %}
+        {% endfor %}
+        <div class="password-container">
+            <label for="id_password" class="label">{{ form.password.label_tag }}</label>
+            {{ form.password }}
+            <img width="20" src="/static/img/show.png" class="show-password-icon" onclick="mostrarSenha()">
+        </div>
+        <div id="div-error">
+            {% if form.errors %}
+            <ul>
+                {% for error in form.non_field_errors %}
+                    <div data-toggle="modal" data-target="#errorModal">
+                        <table class="table table-responsive table-striped">
+                            {% if forloop.first %}
+                            <thead>
+                                <tr>
+                                    <th class="th-1st">Erro</th>
+                                </tr>
+                            </thead>
+                            {% endif %}
+                            <tbody>
+                                <tr>
+                                    <td class="td-1st">{{error}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                {% endfor %}
+            </ul>
+           {% endif %}
+      </div>
+      <div id="div-error-message">
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <div data-toggle="modal" data-target="#errorModal">
+                    <table class="table table-responsive table-striped">
+                        {% if forloop.first %}
+                        <thead>
+                            <tr>
+                                <th class="th-1st">Erro</th>
+                            </tr>
+                        </thead>
+                        {% endif %}
+                        <tbody>
+                            <tr>
+                                <td class="td-1st">{{message}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% endfor %}
+        </ul>
+       {% endif %}
+  </div>
+        <input class="entrar-btn" type="submit" value="Entrar"> 
+        <a href="{% url "create_user" %}">Crie usuário</a>
+        {% comment %} <div id="footer-form-login">
+            <button id="btn-login-left" class="btn btn-primary btn-login"><a class="a-login"  href="{% url 'solicitar_cadastro' %}">Solicitar cadastro</a></button>
+            <button id="btn-login-right" class="btn btn-primary btn-login"><a class="a-login" href="{% url 'password_reset_request' %}">Esqueceu sua senha?</a></button>
+        </div> {% endcomment %}
+    </form>
+{% endblock %}

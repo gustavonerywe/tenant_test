@@ -26,23 +26,29 @@ SECRET_KEY = 'django-insecure-@=0b%)h2wh(bqhi@taf5t5uh2d+y9obxxk=jy!=p_9wt%7ve4u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['user_test.localhost', 'localhost']
 
 
 # Application definition
 
 SHARED_APPS = [
     'django_tenants',
-    'app',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'app',
 ]
 
-TENANT_APPS = ['client_app',]
+TENANT_APPS = [
+    'client_app',
+    'django.contrib.admin',
+    'django.contrib.auth', # Defined in both shared apps and tenant apps
+    'django.contrib.contenttypes', # Defined in both shared apps and tenant apps
+    'django.contrib.messages',
+    'django.contrib.staticfiles',]
 
 INSTALLED_APPS = SHARED_APPS + [app for app in TENANT_APPS if app not in SHARED_APPS]
 
@@ -55,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'app.middleware.TenantAccessMiddleware'
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -141,3 +148,5 @@ TENANT_MODEL = "app.Client"
 TENANT_DOMAIN_MODEL = "app.Domain"
 
 PUBLIC_SCHEMA_URLCONF = "app.urls"
+
+PUBLIC_DOMAIN = "localhost:8000"

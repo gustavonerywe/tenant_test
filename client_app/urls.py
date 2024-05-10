@@ -1,6 +1,9 @@
 from django.urls import path
-from .views import index, create_object
+from . import views
 
 urlpatterns=[
-    path('', index, name="client_index"),
+    path('', views.index, name="client_index"),
+    path('create/', views.create_object, name="client_create"),
+    path('show/', views.showModels, name="client_show"),
+    path('page/', views.page, name='page'),
 ]

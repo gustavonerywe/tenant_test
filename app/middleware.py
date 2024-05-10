@@ -1,26 +1,24 @@
-# from django.http import HttpResponseRedirect
-# from django.contrib.auth import logout
-# from django.urls import reverse_lazy
+from django.http import HttpResponseForbidden
+from django.utils.deprecation import MiddlewareMixin
+import logging
+logger = logging.getLogger(__name__)
 
-# class TenantAccessMiddleware:
-#     def __init__(self, get_response):
-#         self.get_response = get_response
-#         print("Middleware initialized")  # Esta linha deve ser impressa durante a inicialização do servidor
+class SubdomainMiddleware(MiddlewareMixin):
+    def process_request(self, request):
+        domain = 'localhost'
+    
+        host = request.get_host().split(":")[0]
+        
+        if '.' in host and host.split('.')[0]:
+            request_subdomain = host.split('.')[0]
+        else:
+            request_subdomain = domain 
 
-#     def __call__(self, request):
-#         print("Middleware called")  # Verifique se esta linha é impressa em cada requisição
-#         if request.user.is_authenticated:
-#             print("User is authenticated")
-#             host = request.get_host().split('.')
-#             current_subdomain = host[0] if len(host) > 2 else None
-
-#             expected_subdomain = request.user.username
-#             print(f"Current subdomain: {current_subdomain}, Expected subdomain: {expected_subdomain}")
-
-#             if current_subdomain != expected_subdomain:
-#                 print('Subdomain does not match, logging out user')
-#                 logout(request)
-#         else:
-#             print("User is not authenticated")
-#         response = self.get_response(request)
-#         return response
+        print(host, domain)
+        print(request.user.username, "request_subdomain", request_subdomain)
+        
+        if host == domain:
+            pass
+        else:
+            if request.user.is_authenticated and request.user.username != request_subdomain:
+                return HttpResponseForbidden("Acesso não permitido para este domínio")

@@ -14,30 +14,21 @@ from django.contrib.auth.forms import UserCreationForm
 def index(request):
     return HttpResponse("PUBLIC.")
 
-from tenant_schemas.utils import schema_context
 from .models import Client, Domain
 
 def create_user_and_tenant(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            # Crie o usuário
             user = form.save()
 
-            # Crie o tenant com o mesmo schema_name que o username
-            tenant = Client.objects.create(schema_name=user.username, name=user.username)
+            tenant = Client(schema_name=user.username, name=user.username)
+            tenant.save()
+            tenant_domain = f"{user.username}.localhost" if request.META['HTTP_HOST'] == 'localhost:8000' else f"{user.username}.bootrix.com"
+            
+            domain = Domain(domain=tenant_domain, tenant=tenant, is_primary=True)
+            domain.save()
 
-            # Crie o schema
-            tenant_domain = f"{user.username}.localhost:8000" if request.META['HTTP_HOST'] == 'localhost:8000' else f"{user.username}.bootrix.com"
-            with schema_context(tenant.schema_name):
-                # Associe o domínio ao schema
-                domain = Domain.objects.create(
-                    domain=tenant_domain,
-                    tenant=tenant,
-                    is_primary=True
-                )
-
-            # Redirecione para algum lugar após o sucesso
             return redirect('login')
     else:
         form = UserCreationForm()
@@ -55,8 +46,8 @@ def loginView(request):
                 username = form.cleaned_data.get('username')
                 password = form.cleaned_data.get('password')
                 user = authenticate(username=username, password=password)
+                print(authenticate(username=username, password=password))
                 tenant_domain = f"{user.username}.localhost:8000" if request.META['HTTP_HOST'] == 'localhost:8000' else f"{user.username}.bootrix.com"
-                print(user)
                 
                 if user is not None:
                     login(request, user)

@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-@=0b%)h2wh(bqhi@taf5t5uh2d+y9obxxk=jy!=p_9wt%7ve4u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['user_test.localhost', 'localhost']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -45,8 +45,8 @@ SHARED_APPS = [
 TENANT_APPS = [
     'client_app',
     'django.contrib.admin',
-    'django.contrib.auth', # Defined in both shared apps and tenant apps
-    'django.contrib.contenttypes', # Defined in both shared apps and tenant apps
+    'django.contrib.auth', 
+    'django.contrib.contenttypes', 
     'django.contrib.messages',
     'django.contrib.staticfiles',]
 
@@ -61,7 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'app.middleware.TenantAccessMiddleware'
+    'app.middleware.SubdomainMiddleware',
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -149,4 +149,6 @@ TENANT_DOMAIN_MODEL = "app.Domain"
 
 PUBLIC_SCHEMA_URLCONF = "app.urls"
 
-PUBLIC_DOMAIN = "localhost:8000"
+PUBLIC_DOMAIN = "localhost:8000" if DEBUG == True else "bootrix.com.br"
+
+SESSION_COOKIE_DOMAIN = '.localhost' if PUBLIC_DOMAIN == 'localhost:8000' else '.bootrix.com.br'

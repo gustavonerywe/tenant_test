@@ -54,6 +54,7 @@ INSTALLED_APPS = SHARED_APPS + [app for app in TENANT_APPS if app not in SHARED_
 
 MIDDLEWARE = [
     'django_tenants.middleware.main.TenantMainMiddleware',
+    'project.middleware.TenantMainMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -61,7 +62,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'app.middleware.SubdomainMiddleware',
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -152,3 +152,5 @@ PUBLIC_SCHEMA_URLCONF = "app.urls"
 PUBLIC_DOMAIN = "localhost:8000" if DEBUG == True else "bootrix.com.br"
 
 SESSION_COOKIE_DOMAIN = '.localhost' if PUBLIC_DOMAIN == 'localhost:8000' else '.bootrix.com.br'
+
+SHOW_PUBLIC_IF_NO_TENANT_FOUND = True

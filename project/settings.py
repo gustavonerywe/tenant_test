@@ -48,7 +48,8 @@ TENANT_APPS = [
     'django.contrib.auth', 
     'django.contrib.contenttypes', 
     'django.contrib.messages',
-    'django.contrib.staticfiles',]
+    'django.contrib.staticfiles',
+]
 
 INSTALLED_APPS = SHARED_APPS + [app for app in TENANT_APPS if app not in SHARED_APPS]
 
